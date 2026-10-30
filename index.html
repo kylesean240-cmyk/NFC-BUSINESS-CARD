@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101513">
+  <meta name="description" content="A little about me, all in one place. Connect, follow, or save my contact details.">
+  <title>Your Name — Digital Contact Card</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101513;
+      --panel: #191f1c;
+      --panel-soft: #202723;
+      --text: #f3f4ee;
+      --muted: #a4ada6;
+      --accent: #c7f36b;
+      --line: rgba(255, 255, 255, .1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 44px 20px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(199, 243, 107, .09), transparent 44%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    .card {
+      width: min(100%, 440px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, .36);
+      animation: enter .65s ease both;
+    }
+
+    .cover {
+      position: relative;
+      height: 152px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 76% 30%, rgba(199, 243, 107, .32), transparent 32%),
+        radial-gradient(ellipse at 23% 108%, rgba(96, 139, 110, .45), transparent 46%),
+        linear-gradient(135deg, #27352d, #19211d 68%);
+    }
+
+    .cover::before,
+    .cover::after {
+      position: absolute;
+      content: "";
+      width: 250px;
+      height: 250px;
+      border: 1px solid rgba(255, 255, 255, .09);
+      border-radius: 50%;
+    }
+
+    .cover::before { top: -168px; right: -18px; }
+    .cover::after { top: -132px; right: 18px; }
+
+    .topline {
+      position: absolute;
+      z-index: 1;
+      top: 24px;
+      right: 25px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, .77);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .topline::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(199, 243, 107, .75);
+      content: "";
+    }
+
+    .content { padding: 0 30px 28px; }
+
+    .avatar {
+      width: 94px;
+      height: 94px;
+      display: block;
+      margin-top: -48px;
+      position: relative;
+      border: 5px solid var(--panel);
+      border-radius: 50%;
+      background: linear-gradient(145deg, #d5edaa, #78965b);
+      object-fit: cover;
+      object-position: center 30%;
+    }
+
+    .eyebrow {
+      margin: 24px 0 7px;
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(31px, 8vw, 39px);
+      font-weight: 650;
+      letter-spacing: -.055em;
+      line-height: 1.08;
+    }
+
+    .role {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .bio {
+      max-width: 350px;
+      margin: 22px 0 25px;
+      color: #c4cbc5;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin: 25px 0 12px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .section-label::after {
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+      content: "";
+    }
+
+    .actions { display: grid; gap: 10px; }
+
+    .action {
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 10px 15px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--panel-soft);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .action:hover {
+      transform: translateY(-2px);
+      border-color: rgba(199, 243, 107, .42);
+      background: #252e28;
+    }
+
+    .action:focus-visible,
+    .social-link:focus-visible,
+    .website:focus-visible,
+    .footer button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .icon {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      flex: 0 0 35px;
+      place-items: center;
+      border-radius: 11px;
+      background: rgba(199, 243, 107, .1);
+      color: var(--accent);
+    }
+
+    .icon svg, .social-link svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.7;
+    }
+
+    .action-copy { min-width: 0; flex: 1; }
+    .action-title { display: block; font-size: 13px; font-weight: 650; }
+    .action-detail {
+      display: block;
+      overflow: hidden;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .arrow {
+      color: #89938b;
+      font-size: 18px;
+      transition: color .18s ease, transform .18s ease;
+    }
+
+    .action:hover .arrow { transform: translateX(2px); color: var(--accent); }
+
+    .socials { display: flex; flex-wrap: wrap; gap: 9px; }
+
+    .social-link {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .025);
+      color: #d7ddd7;
+      font-size: 11px;
+      font-weight: 600;
+      transition: border-color .18s ease, color .18s ease, background .18s ease;
+    }
+
+    .social-link:hover { border-color: rgba(199, 243, 107, .4); color: var(--accent); }
+    .social-link svg { width: 15px; height: 15px; }
+
+    .website {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 19px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .website svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.7;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 27px;
+      padding-top: 19px;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-note { color: #849087; font-size: 10px; }
+
+    .footer button {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 11px;
+      border: 1px solid rgba(199, 243, 107, .35);
+      border-radius: 10px;
+      background: rgba(199, 243, 107, .08);
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 650;
+      transition: background .18s ease;
+    }
+
+    .footer button:hover { background: rgba(199, 243, 107, .15); }
+    .footer button svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 2;
+      padding: 12px 16px;
+      border: 1px solid rgba(199, 243, 107, .35);
+      border-radius: 12px;
+      background: #202923;
+      color: var(--text);
+      font-size: 13px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+      animation: enter .2s ease both;
+    }
+
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 420px) {
+      body { padding: 20px 13px; }
+      .content { padding-right: 22px; padding-left: 22px; }
+      .cover { height: 132px; }
+      .footer { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="cover" aria-hidden="true">
+      <span class="topline">Tap to connect</span>
+    </div>
+
+    <div class="content">
+      <img class="avatar" src="profile.jpg" alt="Sean Kyle P. David">
+      <p class="eyebrow">Digital contact card</p>
+      <h1>Sean Kyle P. David</h1>
+      <p class="role">Your role · Your company</p>
+      <p class="bio">A short introduction goes here. Tell people what you do, what you care about, or what you’re working on.</p>
+
+      <p class="section-label">Get in touch</p>
+      <div class="actions">
+        <a class="action" href="mailto:hello@yourdomain.com">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+          </span>
+          <span class="action-copy">
+            <span class="action-title">Email me</span>
+            <span class="action-detail">Kylesean240@gmail.com</span>
+          </span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="action" href="tel:+15551234567">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 3h3l2 5-2 1.5a14 14 0 0 0 4.5 4.5L16 12l5 2v3c0 1.1-.9 2-2 2A16 16 0 0 1 5 5c0-1.1.9-2 2-2Z"/></svg>
+          </span>
+          <span class="action-copy">
+            <span class="action-title">Call me</span>
+            <span class="action-detail">+1 (555) 123-4567</span>
+          </span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <p class="section-label">Find me online</p>
+      <div class="socials" aria-label="Social media links">
+        <a class="social-link" href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" aria-label="Instagram (opens in a new tab)">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>
+          Instagram
+        </a>
+        <a class="social-link" href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in a new tab)">
+          <svg viewBox="0 0 24 24"><path d="M6 9v11M6 5v.01M10 20v-6a4 4 0 0 1 8 0v6M10 10v10"/></svg>
+          LinkedIn
+        </a>
+        <a class="social-link" href="https://tiktok.com/@yourusername" target="_blank" rel="noopener noreferrer" aria-label="TikTok (opens in a new tab)">
+          <svg viewBox="0 0 24 24"><path d="M14 4v10.5a4.5 4.5 0 1 1-4-4.47"/><path d="M14 4c.5 3 2.5 5 6 5"/></svg>
+          TikTok
+        </a>
+      </div>
+
+      <a class="website" href="https://yourdomain.com" target="_blank" rel="noopener noreferrer">
+        yourdomain.com
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>
+      </a>
+
+      <div class="footer">
+        <span class="footer-note">Made to make staying in touch easy.</span>
+        <button type="button" id="save-contact">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M5 17v3h14v-3"/></svg>
+          Save contact
+        </button>
+      </div>
+    </div>
+  </main>
+  <div id="notice" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>
+    const contact = {
+      name: "Your Name",
+      title: "Your role",
+      email: "hello@yourdomain.com",
+      phone: "+15551234567",
+      website: "https://yourdomain.com"
+    };
+
+    const saveButton = document.querySelector("#save-contact");
+    const notice = document.querySelector("#notice");
+    let noticeTimer;
+
+    function showNotice(message) {
+      notice.textContent = message;
+      notice.hidden = false;
+      window.clearTimeout(noticeTimer);
+      noticeTimer = window.setTimeout(() => {
+        notice.hidden = true;
+      }, 2800);
+    }
+
+    saveButton.addEventListener("click", () => {
+      const vCard = [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        `FN:${contact.name}`,
+        `TITLE:${contact.title}`,
+        `EMAIL;TYPE=INTERNET:${contact.email}`,
+        `TEL;TYPE=CELL:${contact.phone}`,
+        `URL:${contact.website}`,
+        "END:VCARD"
+      ].join("\r\n");
+      const file = new Blob([vCard], { type: "text/vcard;charset=utf-8" });
+      const url = URL.createObjectURL(file);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "contact.vcf";
+      document.body.append(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showNotice("Contact card downloaded.");
+    });
+  </script>
+</body>
+</html>
